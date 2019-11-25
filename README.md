@@ -1,6 +1,22 @@
 ## Install
 
-see jsreactor module 
+    $ npm install jsreactor jsreactor-channel-sendgrid
+
+then include it as usual:
+
+    var BRE = require('jsreactor')
+
+    var b = BRE(/* myBackendAdapter */ )
+    var inputChannel     = require('jsreactor/channel/Input)
+    var sendgridChannel  = require('jsreactor-channel-sendgrid')
+    new inputChannel(b)
+    new sendgridChannel(b)
+    b.init() // first init
+        
+    b.run({email:"foo@flop.com"}) // data will be passed thru the business rules engine
+                                  // and conditionally triggers actions
+
+> for more see [jsreactor](https://npmjs.com/package/@coderofsalvation/jsreactor) module and see the [test](https://github.com/coderofsalvation/jsreactor-channel-sendgrid/blob/master/test/test.js)
 
 ## Environment vars
 
