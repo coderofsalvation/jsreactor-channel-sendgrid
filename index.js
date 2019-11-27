@@ -25,7 +25,7 @@ module.exports = function(opts){
         for( var i in input ){
             if( !i.match(/succes-*/) ) tplvars[i] = input[i]
         }
-        if( cfg.debugemail == tpl.compile(cfg.to)(input) ) 
+        if( tpl.compile(cfg.debugemail)(input) == tpl.compile(cfg.to)(input) ) 
             contentStr += debugVariables(tplvars) 
         
         tplvars['content'] = contentStr
