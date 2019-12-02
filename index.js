@@ -16,31 +16,42 @@ module.exports = function(opts){
         return str
     }
 
+    this.compile = (obj,data) => {
+        for( var i in obj ) obj[i] = typeof obj[i] != "string" ? obj[i] : tpl.compile(obj[i])(data)
+    }
+
     this.sendEmail = (input,config,results) => {
         console.log("sending email")
         var cfg    = config.config
         var tplvars = {}
-        var contentStr = tpl.compile(config.body)(input)
+        // evaluate handlebar templates
+        this.compile(config,input)
+        this.compile(cfg,input)
+        var contentStr = config.body
         // create tplvars to replace in body (and pass as substitutions to sendgrid)
         for( var i in input ){
             if( !i.match(/succes-*/) ) tplvars[i] = input[i]
         }
-        if( tpl.compile(cfg.debugemail)(input) == tpl.compile(cfg.to)(input) ) 
+        if( cfg.debugemail == cfg.to ) 
             contentStr += debugVariables(tplvars) 
         
-        tplvars['content'] = contentStr
+        tplvars.content = contentStr
+        tplvars.subject = config.subject
         // compose email
         var helper = require('sendgrid').mail;
-        var fromEmail = new helper.Email( tpl.compile(cfg.from)(input) );
-        var toEmail = new helper.Email( tpl.compile(cfg.to)(input) );
+        var fromEmail = new helper.Email( cfg.from );
+        var toEmail = new helper.Email( cfg.to );
         var content = new helper.Content('text/html', contentStr )
         var mail = new helper.Mail(fromEmail, config.subject, toEmail, content).toJSON()
-        mail.template_id = tpl.compile(cfg.template)(input)
-        mail.personalizations[0].subject = tpl.compile(config.subject)(input)
-        if( cfg.cc )    mail.personalizations[0].cc  = tpl.compile(cfg.cc)(input)
-        if( cfg.bcc)    mail.personalizations[0].bcc = tpl.compile(cfg.bcc)(input)
+        mail.subject = config.subject
+        mail.template_id = cfg.template
+        if( input.attachments ) mail.attachments = input.attachments
+        mail.personalizations[0].subject = config.subject
+        if( cfg.cc )    mail.personalizations[0].cc  = cfg.cc
+        if( cfg.bcc)    mail.personalizations[0].bcc = cfg.bcc
         mail.personalizations[0].dynamic_template_data = tplvars
-        //debug(JSON.stringify(mail,null,2))
+        mail.personalizations[0].substitutions = {subject:config.subject}
+        //console.log(JSON.stringify(mail,null,2))
         
         var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
         var request = sg.emptyRequest({
@@ -86,7 +97,7 @@ module.exports = function(opts){
                             type:"string",
                             format:"xhtml",
                             title:"body",
-                            description:"mustache template language supported (for all fields). This textarea is exposed as {{content}} in sendgrid.",
+                            description:"<a href='https://gist.github.com/LeCoupa/6176077a9a8e2ad00eda' target='_blank'>handlebars</a> template language supported (for all fields).<br>This textarea is exposed as {{content}} in sendgrid.<br>For attachments pass <a href='https://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/index.html' target='_blank'>.attachments</a>-array to the input.",
                             default:"hello {{foo}} {{a.b}}\n\n{{#if bar}}\n\t<h2>jaaaa</h2>\n{{/if}}"                      
                         },
                         config:{

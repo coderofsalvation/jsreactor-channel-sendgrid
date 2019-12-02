@@ -1,6 +1,6 @@
 ## Install
 
-    $ npm install jsreactor jsreactor-channel-sendgrid
+    $ npm install jsreactor-channel-sendgrid @coderofsalvation/jsreactor 
 
 then include it as usual:
 
@@ -23,3 +23,7 @@ then include it as usual:
 * SENDGRID_API_KEY=l2k3l2k3 (see [sendgrid](npmjs.com/package/sendgrid))
 * SENDGRID_FROM=my@company.com (default from-address)
 * SENDGRID_TEMPLATE=lk3l3-lk34 (default template)
+
+## Notes
+
+If you want to send attachements just pass `{email:"foo@flop.com",attachments:[]}` (see [docs](https://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/index.html) for attachment-format)
