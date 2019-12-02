@@ -50,7 +50,7 @@ module.exports = function(opts){
         if( cfg.cc )    mail.personalizations[0].cc  = cfg.cc
         if( cfg.bcc)    mail.personalizations[0].bcc = cfg.bcc
         mail.personalizations[0].dynamic_template_data = tplvars
-        mail.personalizations[0].substitutions = {subject:config.subject}
+        //mail.personalizations[0].substitutions = {subject:config.subject}
         //console.log(JSON.stringify(mail,null,2))
         
         var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
