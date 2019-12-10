@@ -21,8 +21,9 @@ module.exports = function(opts){
     }
 
     this.sendEmail = (input,config,results) => {
-        console.log("sending email")
         var cfg    = config.config
+        if( input.language && input.language == cfg.language ) return // not our language..skip 
+        console.log("sending email")
         var tplvars = {}
         // evaluate handlebar templates
         this.compile(config,input)
@@ -105,7 +106,7 @@ module.exports = function(opts){
                             title:"more options",
                             options:{disable_collapse:false,collapsed:true},
                             properties:{
-                                language:{type:"string",maxLength:2,title:"language",options:{inputAttributes:{placeholder:"EN"}}},
+                                language:{type:"string",maxLength:2,title:"language",options:{inputAttributes:{placeholder:"EN"}},description:"entering 'NL' will only send this email if {language:'NL'} was passed as input"},
                                 from:{ type:"string",title:"from",default: process.env.SENDGRID_FROM || "me@foo.com"},
                                 to:{ type:"string",title:"to",default:"{{email}}"},
                                 cc:{ type:"string",title:"cc",options:{inputAttributes:{placeholder:"cc (commaseparated)"}}},
