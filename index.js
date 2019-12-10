@@ -22,8 +22,7 @@ module.exports = function(opts){
 
     this.sendEmail = (input,config,results) => {
         var cfg    = config.config
-        if( input.language && input.language == cfg.language ) return // not our language..skip 
-        console.log("sending email")
+        if( (cfg.language || input.language) && input.language != cfg.language ) return // not our language..skip 
         var tplvars = {}
         // evaluate handlebar templates
         this.compile(config,input)
@@ -70,7 +69,6 @@ module.exports = function(opts){
     }
 
     this.init = async () => {
-        opts.bre.log("registering "+this.title)
         this.trigger = {
             schema: [
                 /*
