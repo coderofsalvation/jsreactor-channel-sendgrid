@@ -47,8 +47,8 @@ module.exports = function(opts){
         mail.template_id = cfg.template
         if( input.attachments ) mail.attachments = input.attachments
         mail.personalizations[0].subject = config.subject
-        if( cfg.cc )    mail.personalizations[0].cc  = cfg.cc
-        if( cfg.bcc)    mail.personalizations[0].bcc = cfg.bcc
+        if( cfg.cc )    mail.personalizations[0].cc  = cfg.cc.split(",").map( (e) => ({email:e.trim()}) )
+        if( cfg.bcc)    mail.personalizations[0].bcc = cfg.bcc.split(",").map( (e) => ({email:e.trim()}) )
         mail.personalizations[0].dynamic_template_data = tplvars
         //mail.personalizations[0].substitutions = {subject:config.subject}
         //console.log(JSON.stringify(mail,null,2))
