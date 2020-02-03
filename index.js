@@ -20,6 +20,15 @@ module.exports = function(opts){
         for( var i in obj ) obj[i] = typeof obj[i] != "string" ? obj[i] : tpl.compile(obj[i])(data)
     }
 
+    this.sendEmails = (input,config,results) => {
+        var multiple = false
+        for( var i = 0; input[i]; i++ ){
+            this.sendEmail( input[i], config, results )
+            multiple = true
+        }
+        if( !multiple ) this.sendEmail(input,config,results)
+    }
+
     this.sendEmail = (input,config,results) => {
         var cfg    = config.config
         if( (cfg.language || input.language) && input.language != cfg.language ) return // not our language..skip 
@@ -30,7 +39,8 @@ module.exports = function(opts){
         var contentStr = config.body
         // create tplvars to replace in body (and pass as substitutions to sendgrid)
         for( var i in input ){
-            if( !i.match(/succes-*/) ) tplvars[i] = input[i]
+            // ignore requestdata or succes-messages from jsreactor
+            if( !i.match(/(succes-*|^req$|^request$)/) ) tplvars[i] = input[i]
         }
         if( cfg.debugemail == cfg.to ) 
             contentStr += debugVariables(tplvars) 
@@ -90,7 +100,7 @@ module.exports = function(opts){
                     type:"object",
                     title:"send email",
                     properties:{
-                        type: bre.addType('send_email', this.sendEmail ),
+                        type: bre.addType('send_email', this.sendEmails ),
                         subject:{ type:"string",title:"subject",default:"my subject",options:{inputAttributes:{placeholder:"subject"}}},
                         body:{
                             type:"string",
@@ -106,7 +116,7 @@ module.exports = function(opts){
                             properties:{
                                 language:{type:"string",maxLength:2,title:"language",options:{inputAttributes:{placeholder:"EN"}},description:"entering 'NL' will only send this email if {language:'NL'} was passed as input"},
                                 from:{ type:"string",title:"from",default: process.env.SENDGRID_FROM || "me@foo.com"},
-                                to:{ type:"string",title:"to",default:"{{email}}"},
+                                to:{ type:"string",title:"to",description:"array is also supported",default:"{{email}}"},
                                 cc:{ type:"string",title:"cc",options:{inputAttributes:{placeholder:"cc (commaseparated)"}}},
                                 bcc:{ type:"string",title:"bcc",options:{inputAttributes:{placeholder:"bcc (commaseparated)"}}},        
                                 template:{ type:"string",title:"template ID (sendgrid)",default:process.env.SENDGRID_TEMPLATE||"",options:{inputAttributes:{placeholder:"enter sendgrid template ID here"}}},

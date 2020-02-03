@@ -66,3 +66,22 @@ z.test('run input through rules engine', async (t) => {
   var result = await bre.run({email:"foo@bar.com"})
   t.ok(plugin.sendEmail.called,"sendEmail was called")
 })
+
+z.test('run multiple inputs through rules engine', async (t) => {
+  // spy function
+  var old = plugin.sendEmail 
+  plugin.sendEmail = function(){
+    old.apply(this,arguments)
+    plugin.sendEmail.called += 1
+  }
+  plugin.sendEmail.called = 0
+
+  await bre.init()
+  var result = await bre.run({
+    '0':{email:"foo@bar.com"},
+    '1':{email:"BAR@bar.com"}
+  })
+  t.ok(plugin.sendEmail.called == 2,"sendEmail was called twice")
+})
+
+
