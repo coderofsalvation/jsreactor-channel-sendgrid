@@ -42,7 +42,7 @@ module.exports = function(opts){
             // ignore requestdata or succes-messages from jsreactor
             if( !i.match(/(succes-*|^req$|^request$)/) ) tplvars[i] = input[i]
         }
-        if( cfg.debugemail == cfg.to ) 
+        if( cfg.debug ) 
             contentStr += debugVariables(tplvars) 
         
         tplvars.content = contentStr
@@ -120,7 +120,7 @@ module.exports = function(opts){
                                 cc:{ type:"string",title:"cc",options:{inputAttributes:{placeholder:"cc (commaseparated)"}}},
                                 bcc:{ type:"string",title:"bcc",options:{inputAttributes:{placeholder:"bcc (commaseparated)"}}},        
                                 template:{ type:"string",title:"template ID (sendgrid)",default:process.env.SENDGRID_TEMPLATE||"",options:{inputAttributes:{placeholder:"enter sendgrid template ID here"}}},
-                                debugemail:{type:"string",title:"debug email",options:{inputAttributes:{placeholder:"me@company.com"}},description:"this email-receiver can see all template variables in bottom of email"}
+                                debug:{type:"boolean",format:"checkbox",title:"debug mode",options:{inputAttributes:{placeholder:"me@company.com"}},description:"bcc & cc-receivers can see all template variables in bottom of email"}
                             }
                         }
                         

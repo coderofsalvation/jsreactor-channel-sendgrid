@@ -58,12 +58,12 @@ z.test('loadRuleConfigs', async (t) => {
 z.test('run input through rules engine', async (t) => {
   // spy function
   var old = plugin.sendEmail 
-  plugin.sendEmail = function(){
+  plugin.sendEmail = function(input,config,results){
     old.apply(this,arguments)
+    console.dir(config)
     plugin.sendEmail.called = true
   }
   await bre.init()
-  var result = await bre.run({email:"foo@bar.com"})
   t.ok(plugin.sendEmail.called,"sendEmail was called")
 })
 
