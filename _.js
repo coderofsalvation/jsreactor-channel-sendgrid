@@ -23,5 +23,6 @@ module.exports = {
         var newObj = {};
         dive("", arr, newObj);
         return newObj;
-    }
+    },
+    clone: (p) => JSON.parse( JSON.stringify(p) ) 
 }
