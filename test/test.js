@@ -88,7 +88,7 @@ z.test('pass along multiple inputs through previous action', async (t) => {
               "config": {
                 "type": "javascript",
                 "config": {
-                    "js": "for( var i = 0; i < 2; i++ ) input.output[i] = {email:`${i}@foo.com`};"
+                    "js": "for( var i = 0; i < 2; i++ ) input[i] = {email:`${i}@foo.com`};"
                 }
               },
               "channel": "Javascript"

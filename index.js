@@ -22,8 +22,8 @@ module.exports = function(opts){
 
     this.sendEmails = (input,config,results) => {
         var multiple = false
-        for( var i = 0; input.output[i]; i++ ){
-            this.sendEmail( input.output[i], _.clone(config), results )
+        for( var i = 0; input[i]; i++ ){
+            this.sendEmail( Object.assign(input,input[i]), _.clone(config), results )
             multiple = true
         }
         if( !multiple ) this.sendEmail(input,config,results)
