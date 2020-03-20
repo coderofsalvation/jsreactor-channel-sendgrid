@@ -73,7 +73,7 @@ module.exports = function(opts){
         sg.API(request, function (error, response) {
             if (error || !String(response.statusCode).match(/20/) ) {
                 console.error(`sendgrid response: (${input.runid}) ${error} ${JSON.stringify(response.body,null,2)}\n${JSON.stringify(mail,null,2)}`)
-            }else bre.log(`sendgrid response OK (${input.runid})`)
+            }else bre.log(`sendgrid response OK (${input.runid}) mail sent to ${cfg.to.replace(/@.*/,'@**********')}`)
         });
         return {input,config,results}
     }
