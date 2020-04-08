@@ -40,7 +40,7 @@ module.exports = function(opts){
         // create tplvars to replace in body (and pass as substitutions to sendgrid)
         for( var i in input ){
             // ignore requestdata or succes-messages from jsreactor
-            if( !i.match(/(succes-*|^req$|^request$)/) ) tplvars[i] = input[i]
+            if( !i.match(/(succes-*|^req$|^trigger$|^request$)/) ) tplvars[i] = input[i]
         }
         if( cfg.debug ) 
             contentStr += debugVariables(tplvars) 
