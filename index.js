@@ -47,9 +47,11 @@ module.exports = function(opts){
         
         tplvars.content = contentStr
         tplvars.subject = config.subject
+        tplvars.from    = cfg.from
         // compose email
         var helper = require('sendgrid').mail;
-        var fromEmail = new helper.Email( cfg.from );
+        var fromEmail = new helper.Email( cfg.from.replace(/&gt;/g,'>').replace(/&lt;/,'<') )
+        
         var toEmail = new helper.Email( cfg.to );
         var content = new helper.Content('text/html', contentStr )
         var mail = new helper.Mail(fromEmail, config.subject, toEmail, content).toJSON()
