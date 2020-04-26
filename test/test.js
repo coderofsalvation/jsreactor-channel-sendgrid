@@ -88,7 +88,7 @@ z.test('pass along multiple inputs through previous action', async (t) => {
               "config": {
                 "type": "javascript",
                 "config": {
-                    "js": "for( var i = 0; i < 2; i++ ) input[i] = {email:`${i}@foo.com`};"
+                    "js": "for( var i = 0; i < 2; i++ ) input[i] = {email:`${i}@foo.com`,output:input.output};"
                 }
               },
               "channel": "Javascript"
@@ -109,7 +109,16 @@ z.test('pass along multiple inputs through previous action', async (t) => {
                 "subject": "my subject"
               },
               "channel": "Sendgrid Email"
-            }
+            },
+			{
+              "config": {
+                "type": "javascript",
+                "config": {
+                    "js": "console.log( JSON.stringify(input) );input.output.continued = true;"
+                }
+              },
+              "channel": "Javascript"
+            },
           ],
           "trigger": [ /* empty always triggers */ ]
         },
@@ -121,6 +130,7 @@ z.test('pass along multiple inputs through previous action', async (t) => {
   
   await bre.init()
   var result = await bre.run({})
-  t.ok(plugin.sendEmail.called == 2 ,"sendEmail was called twice")
+  t.equal(plugin.sendEmail.called, 2 ,"sendEmail was called twice")
+  console.dir(result)
+  t.ok(result.output.continued, "sendgrid action is not blocking other actions")
 })
-

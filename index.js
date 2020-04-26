@@ -20,13 +20,11 @@ module.exports = function(opts){
         for( var i in obj ) obj[i] = typeof obj[i] != "string" ? obj[i] : tpl.compile(obj[i])(data)
     }
 
-    this.sendEmails = (input,config,results) => {
-        var multiple = false
-        for( var i = 0; input[i]; i++ ){
-            this.sendEmail( Object.assign(input,input[i]), _.clone(config), results )
-            multiple = true
-        }
-        if( !multiple ) this.sendEmail(input,config,results)
+    this.sendEmails = async (input,config,results) => {
+		await bre.Channel.runMultiInput( input, async (minput,i) => {
+			return this.sendEmail( minput, _.clone(config), results )
+		}, console.error )
+        return {input,config,results}	
     }
 
     this.sendEmail = (input,config,results) => {
@@ -124,8 +122,7 @@ module.exports = function(opts){
                                 template:{ type:"string",title:"template ID (sendgrid)",default:process.env.SENDGRID_TEMPLATE||"",options:{inputAttributes:{placeholder:"enter sendgrid template ID here"}}},
                                 debug:{type:"boolean",format:"checkbox",title:"debug mode",options:{inputAttributes:{placeholder:"me@company.com"}},description:"bcc & cc-receivers can see all template variables in bottom of email"}
                             }
-                        }
-                        
+                        }                        
                     }
                 }            
             ]            
