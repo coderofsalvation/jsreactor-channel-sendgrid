@@ -48,13 +48,13 @@ module.exports = function(opts){
         tplvars.from    = cfg.from
         // compose email
         var helper = require('sendgrid').mail;
-        var fromEmail = new helper.Email( cfg.from.replace(/&gt;/g,'>').replace(/&lt;/,'<') )
+        var fromEmail = new helper.Email( String(cfg.from).replace(/&gt;/g,'>').replace(/&lt;/,'<') )
         
         var toEmail = new helper.Email( cfg.to );
         var content = new helper.Content('text/html', contentStr )
         var mail = new helper.Mail(fromEmail, config.subject, toEmail, content).toJSON()
         mail.subject = config.subject
-        mail.template_id = cfg.template
+        mail.template_id = String(cfg.template).trim()
         if( input.attachments ) mail.attachments = input.attachments
         mail.personalizations[0].subject = config.subject
         if( cfg.cc )    mail.personalizations[0].cc  = cfg.cc.split(",").map( (e) => ({email:e.trim()}) )
