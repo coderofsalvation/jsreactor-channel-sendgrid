@@ -1,6 +1,6 @@
 {
   "name": "jsreactor-channel-sendgrid",
-  "version": "1.0.72",
+  "version": "1.0.73",
   "description": "see jsreactor module",
   "main": "index.js",
   "scripts": {
